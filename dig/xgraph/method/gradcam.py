@@ -111,18 +111,20 @@ class GradCAM(WalkBase):
                 attr_wo_relu = self.explain_method.attribute(x, ex_label, additional_forward_args=edge_index)
                 mask = normalize(attr_wo_relu.relu())
                 mask = mask.squeeze()
-                mask = (mask[self_loop_edge_index[0]] + mask[self_loop_edge_index[1]]) / 2
+                # print(mask)
+                # mask = (mask[self_loop_edge_index[0]] + mask[self_loop_edge_index[1]]) / 2
+                # print(mask)
                 edge_masks.append(mask.detach())
                 mask = self.control_sparsity(mask, kwargs.get('sparsity'))
                 mask = mask.sigmoid()
                 hard_edge_masks.append(mask.detach())
 
         # Store related predictions for further evaluation.
-        with torch.no_grad():
-            with self.connect_mask(self):
-                related_preds = self.eval_related_pred(x, edge_index, hard_edge_masks, **kwargs)
+        # with torch.no_grad():
+            # with self.connect_mask(self):
+                # related_preds = self.eval_related_pred(x, edge_index, hard_edge_masks, **kwargs)
 
-        return edge_masks, hard_edge_masks, related_preds
+        return edge_masks, hard_edge_masks #,related_preds
 
 
 class GraphLayerGradCam(ca.LayerGradCam):

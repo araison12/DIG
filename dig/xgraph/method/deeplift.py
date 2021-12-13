@@ -92,17 +92,17 @@ class DeepLIFT(WalkBase):
                 attr_wo_relu = (torch.chunk(m, 2)[0] * (inp - inp_ref)).sum(1)
 
                 mask = attr_wo_relu.squeeze()
-                score_mask = (mask[self_loop_edge_index[0]] + mask[self_loop_edge_index[1]]) / 2
-                edge_masks.append(score_mask.detach())
-                mask = self.control_sparsity(score_mask, kwargs.get('sparsity'))
+                # score_mask = (mask[self_loop_edge_index[0]] + mask[self_loop_edge_index[1]]) / 2
+                edge_masks.append(mask.detach())
+                # mask = self.control_sparsity(score_mask, kwargs.get('sparsity'))
                 mask = mask.sigmoid()
                 hard_edge_masks.append(mask.detach())
 
         # Store related predictions for further evaluation.
         shap._remove_hooks()
 
-        with torch.no_grad():
-            with self.connect_mask(self):
-                related_preds = self.eval_related_pred(x, edge_index, hard_edge_masks, **kwargs)
+        # with torch.no_grad():
+            # with self.connect_mask(self):
+                # related_preds = self.eval_related_pred(x, edge_index, hard_edge_masks, **kwargs)
 
-        return edge_masks, hard_edge_masks, related_preds
+        return edge_masks, hard_edge_masks#, related_preds
